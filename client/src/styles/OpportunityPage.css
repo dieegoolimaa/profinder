@@ -1,0 +1,37 @@
+h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.opportunity-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.opportunity-details p {
+  font-size: 1.125rem;
+  margin: 0.5rem 0;
+  line-height: 1.5;
+  color: #1d1d1f;
+}
+
+.opportunity-details p span {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .opportunity-container {
+    padding: 1rem;
+  }
+
+  .opportunity-details p {
+    font-size: 1rem;
+  }
+}

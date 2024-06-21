@@ -1,0 +1,74 @@
+h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+form {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #1d1d1f;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="url"],
+textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0070c9;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #005bb5;
+}
+
+@media (max-width: 768px) {
+  form {
+    padding: 1rem;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  input[type="url"],
+  textarea {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  button {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+}
