@@ -19,8 +19,7 @@ const OpportunitiesListPage = () => {
         },
       });
       if (response.status === 200) {
-        const data = response.data;
-        setOpportunities(data);
+        setOpportunities(response.data);
       } else {
         console.log(response.data);
       }
@@ -31,7 +30,7 @@ const OpportunitiesListPage = () => {
 
   useEffect(() => {
     getOpportunity();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, []);
 
   const handleSearch = (event) => {
@@ -47,22 +46,22 @@ const OpportunitiesListPage = () => {
         onChange={handleSearch}
         placeholder="Search by title"
       />
-
       <ul>
-        {opportunities
-          .filter((opportunity) =>
-            opportunity.title.toLowerCase().includes(search.toLowerCase())
-          )
-          .map((opportunity) => (
-            <li key={opportunity._id}>
-              <Link to={`/opportunities/${opportunity._id}`}>
-                <div>
-                  <h2>{opportunity.title}</h2>
-                  <p>{opportunity.location}</p>
-                </div>
+        {opportunities.length > 0 ? (
+          opportunities.map((currentOpportunity) => (
+            <div key={currentOpportunity._id}>
+              <Link to={`/opportunities/${currentOpportunity._id}`}>
+                <li>{currentOpportunity.title}</li>
+                <p>{currentOpportunity.location}</p>
               </Link>
-            </li>
-          ))}
+              <Link to={`/opportunities/${currentOpportunity._id}/apply`}>
+                Apply
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p>No opportunities found.</p>
+        )}
       </ul>
       <div>
         <Link to="/create-opportunity">Create new opportunity</Link>

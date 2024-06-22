@@ -4,7 +4,7 @@ const Profile = require("../models/Profile.model");
 const router = require("express").Router();
 
 // Create profile
-router.post("/profile", isAuthenticated, async (req, res) => {
+router.post("/profile-creation", isAuthenticated, async (req, res) => {
   // Check if profile already exists
   const profile = await Profile.findOne({ user: user });
   if (profile) {

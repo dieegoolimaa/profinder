@@ -1,39 +1,43 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { SessionContext } from "../contexts/SessionContext";
 import axios from "axios";
 
 const SignupPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const API_URL = import.meta.env.VITE_API_URL;
+  const { setToken } = useContext(SessionContext);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(`API URL: ${API_URL}`);
     try {
-      const response = await axios.post(`${API_URL}/auth/signup`, {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/signup`,
+        {
+          email,
+          password,
+        }
+      );
       if (response.status === 201) {
-        const newUser = response.data;
-        console.log(newUser);
+        const data = response.data;
+        setToken(data.token);
+        localStorage.setItem("authToken", data.token); // Store token in localStorage
         navigate("/profile-creation");
       } else {
-        console.log("Error:", response.data.message);
+        console.log(response.data);
       }
     } catch (error) {
-      console.log("Request failed:", error);
+      console.log(error);
     }
   };
 
   return (
     <>
-      <h1>Signup</h1>
+      <h1>Sign Up</h1>
       <form onSubmit={handleSubmit}>
         <label>
-          E-mail
+          Email
           <input
             value={email}
             onChange={(event) => setEmail(event.target.value)}
@@ -50,7 +54,7 @@ const SignupPage = () => {
           />
         </label>
         <button type="submit">Sign Up</button>
-        <Link to="/login">Back to Login</Link>
+        <Link to="/login">Already have an account? Log In</Link>
       </form>
     </>
   );

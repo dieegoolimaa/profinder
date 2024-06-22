@@ -11,16 +11,18 @@ const LoginPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(email, password);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/login`,
-        { email, password }
+        {
+          email,
+          password,
+        }
       );
       if (response.status === 200) {
         const data = response.data;
         setToken(data.token);
-        localStorage.setItem("authToken", data.token);
+        window.localStorage.setItem("authToken", data.token);
         navigate("/dashboard");
       } else {
         console.log(response.data);
@@ -35,7 +37,7 @@ const LoginPage = () => {
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <label>
-          Username
+          Email
           <input
             value={email}
             onChange={(event) => setEmail(event.target.value)}

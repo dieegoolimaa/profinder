@@ -21,17 +21,18 @@ const SessionContextProvider = ({ children }) => {
       );
 
       if (response.ok) {
-        const parsed = await response.json();
-        console.log(parsed);
         setToken(currentToken);
+        setIsLoading(false);
       } else {
         window.localStorage.removeItem("authToken");
+        setIsLoading(false);
+        navigate("/login");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       window.localStorage.removeItem("authToken");
-    } finally {
       setIsLoading(false);
+      navigate("/login");
     }
   };
 
@@ -47,8 +48,6 @@ const SessionContextProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       window.localStorage.setItem("authToken", token);
-    } else {
-      window.localStorage.removeItem("authToken");
     }
   }, [token]);
 
@@ -61,7 +60,7 @@ const SessionContextProvider = ({ children }) => {
   const withToken = async (endpoint, method = "GET", payload) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api${endpoint}`,
+        `${import.meta.env.VITE_API_URL}${endpoint}`,
         {
           method,
           headers: {
@@ -72,11 +71,11 @@ const SessionContextProvider = ({ children }) => {
         }
       );
       if (response.ok) {
-        const newBook = await response.json();
-        console.log(newBook);
+        const data = await response.json();
+        console.log(data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
