@@ -19,6 +19,7 @@ const OpportunitiesListPage = () => {
         },
       });
       if (response.status === 200) {
+        console.log(response.data);
         setOpportunities(response.data);
       } else {
         console.log(response.data);
@@ -31,7 +32,7 @@ const OpportunitiesListPage = () => {
   useEffect(() => {
     getOpportunity();
     // eslint-disable-next-line
-  }, []);
+  }, [token]);
 
   const handleSearch = (event) => {
     setSearch(event.target.value);

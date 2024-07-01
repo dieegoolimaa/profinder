@@ -39,8 +39,7 @@ const CreateOpportunityPage = () => {
       if (response.status === 201) {
         navigate("/opportunities");
       } else {
-        const data = await response.json();
-        console.log(data);
+        console.log(response.data);
       }
     } catch (error) {
       console.log(error);

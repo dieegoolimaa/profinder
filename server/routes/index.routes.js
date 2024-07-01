@@ -7,13 +7,16 @@ router.get("/", (req, res) => {
 const authRoutes = require("./auth.routes");
 router.use("/auth", authRoutes);
 
-const profileRoutes = require("./profile.routes");
-router.use("/profile", profileRoutes);
+const professionalProfileRoutes = require("./professional-profile.routes");
+router.use("/professional-profile", professionalProfileRoutes);
 
 const opportunityRoutes = require("./opportunity.routes");
 router.use("/opportunities", opportunityRoutes);
 
 const companyRoutes = require("./company.routes");
 router.use("/companies", companyRoutes);
+
+const applicationRoutes = require("./application.routes");
+router.use("/applications", applicationRoutes);
 
 module.exports = router;

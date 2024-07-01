@@ -20,24 +20,6 @@ const Navbar = () => {
             <Link to="/dashboard">Dashboard</Link>
           </li>
           <li>
-            <Link to="/opportunities">Opportunities</Link>
-          </li>
-          <li>
-            <Link to="/profile-creation">Profile Creation</Link>
-          </li>
-          <li>
-            <Link to="/profile">Profile</Link>
-          </li>
-          <li>
-            <Link to="/create-opportunity">Create Opportunity</Link>
-          </li>
-          <li>
-            <Link to="/apply">Apply</Link>
-          </li>
-          <li>
-            <Link to="/applications">Applications</Link>
-          </li>
-          <li>
             <Link to="/" onClick={handleLogout}>
               Logout
             </Link>

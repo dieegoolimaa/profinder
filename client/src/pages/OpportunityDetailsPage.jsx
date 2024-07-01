@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/OpportunityPage.css";
+import { Link } from "react-router-dom";
 
 const OpportunityPage = () => {
   const { opportunityId } = useParams();
@@ -27,7 +28,7 @@ const OpportunityPage = () => {
   useEffect(() => {
     getOpportunity();
     // eslint-disable-next-line
-  }, []);
+  }, [opportunityId]);
 
   return (
     <>
@@ -52,6 +53,10 @@ const OpportunityPage = () => {
               <span>Expiry Date:</span> {currentOpportunity.expiryDate}
             </p>
           </div>
+
+          <Link to={`/opportunities/${currentOpportunity._id}/apply`}>
+            Apply
+          </Link>
         </div>
       ))}
     </>

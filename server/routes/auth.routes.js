@@ -1,50 +1,26 @@
 const User = require("../models/User.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-
 const { isAuthenticated } = require("../middlewares/route-guard.middleware");
-
 const router = require("express").Router();
 
 // Sign up route
 router.post("/signup", async (req, res) => {
-  const password = req.body.password;
+  const { email, password } = req.body;
 
   // Password validation
-  if (password.length < 8) {
+  if (
+    password.length < 8 ||
+    password.includes(" ") ||
+    !password.match(/[a-z]/g) ||
+    !password.match(/[A-Z]/g) ||
+    !password.match(/[0-9]/g) ||
+    !password.match(/[^a-zA-Z\d]/g)
+  ) {
     return res.status(400).json({
       success: false,
-      message: "Password must be at least 8 characters",
-    });
-  }
-  if (password.includes(" ")) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Password cannot contain spaces" });
-  }
-  if (!password.match(/[a-z]/g)) {
-    return res.status(400).json({
-      success: false,
-      message: "Password must contain at least one lowercase letter",
-    });
-  }
-  if (!password.match(/[A-Z]/g)) {
-    return res.status(400).json({
-      success: false,
-      message: "Password must contain at least one uppercase letter",
-    });
-  }
-  if (!password.match(/[0-9]/g)) {
-    return res.status(400).json({
-      success: false,
-      message: "Password must contain at least one number",
-    });
-  }
-
-  if (!password.match(/[^a-zA-Z\d]/g)) {
-    return res.status(400).json({
-      success: false,
-      message: "Password must contain at least one special character",
+      message:
+        "Password must be at least 8 characters and contain no spaces, with at least one lowercase letter, one uppercase letter, one number, and one special character.",
     });
   }
 
@@ -54,18 +30,13 @@ router.post("/signup", async (req, res) => {
 
   // Create user
   try {
-    const newUser = await User.create({
-      email: req.body.email,
-      password: hashedPassword,
-    });
-
+    const newUser = await User.create({ email, password: hashedPassword });
     res.status(201).json({
       success: true,
       message: "User created successfully",
       user: newUser,
     });
   } catch (error) {
-    // Check for duplicate key error (email already exists)
     if (error.code === 11000) {
       res.status(400).json({ success: false, message: "Email already exists" });
     } else {
@@ -110,7 +81,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Verify
+// Verify route
 router.get("/verify", isAuthenticated, (req, res) => {
   res.json({ message: "Hello", data: req.tokenPayload });
 });

@@ -1,38 +1,34 @@
 import { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import PropTypes from "prop-types";
 
 export const SessionContext = createContext();
 
-// eslint-disable-next-line react/prop-types
 const SessionContextProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(window.localStorage.getItem("authToken"));
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const verifyToken = async (currentToken) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/verify`,
-        {
-          headers: {
-            Authorization: `Bearer ${currentToken}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_URL}/auth/verify`, {
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      });
 
-      if (response.ok) {
-        setToken(currentToken);
+      if (response.status === 200) {
+        const data = response.data;
+        setToken(data.token);
         setIsLoading(false);
       } else {
         window.localStorage.removeItem("authToken");
         setIsLoading(false);
-        navigate("/login");
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       window.localStorage.removeItem("authToken");
       setIsLoading(false);
-      navigate("/login");
     }
   };
 
@@ -43,7 +39,7 @@ const SessionContextProvider = ({ children }) => {
     } else {
       setIsLoading(false);
     }
-  }, []);
+  }, [API_URL]);
 
   useEffect(() => {
     if (token) {
@@ -54,35 +50,14 @@ const SessionContextProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     window.localStorage.removeItem("authToken");
-    navigate("/login");
   };
 
-  const withToken = async (endpoint, method = "GET", payload) => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}${endpoint}`,
-        {
-          method,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  SessionContextProvider.propTypes = {
+    children: PropTypes.node.isRequired,
   };
 
   return (
-    <SessionContext.Provider
-      value={{ token, setToken, logout, isLoading, withToken }}
-    >
+    <SessionContext.Provider value={{ token, setToken, logout, isLoading }}>
       {children}
     </SessionContext.Provider>
   );

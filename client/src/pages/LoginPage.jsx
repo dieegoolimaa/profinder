@@ -1,34 +1,43 @@
-import { Link, useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { SessionContext } from "../contexts/SessionContext";
-import axios from "axios";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setToken } = useContext(SessionContext);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(email, password);
+
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/login`,
-        {
-          email,
-          password,
-        }
-      );
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
       if (response.status === 200) {
-        const data = response.data;
-        setToken(data.token);
-        window.localStorage.setItem("authToken", data.token);
-        navigate("/dashboard");
+        const user = await response.json();
+        console.log("Response from server:", user);
+
+        if (user.authToken) {
+          setToken(user.authToken);
+          window.localStorage.setItem("authToken", user.authToken);
+          navigate("/professional-profile");
+        } else {
+          console.error("Token is missing in the response.");
+        }
       } else {
-        console.log(response.data);
+        console.log("Failed to log in:", await response.json());
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error during login:", error);
     }
   };
 
@@ -47,14 +56,13 @@ const LoginPage = () => {
         <label>
           Password
           <input
+            type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
-            type="password"
           />
         </label>
-        <button type="submit">Log In</button>
-        <Link to="/signup">Sign Up</Link>
+        <button type="submit">Login</button>
       </form>
     </>
   );

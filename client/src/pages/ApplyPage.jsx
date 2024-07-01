@@ -1,27 +1,28 @@
-import { useState, useEffect, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { SessionContext } from "../contexts/SessionContext";
+import { useContext, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import { SessionContext } from "../contexts/SessionContext";
 
 const ApplyPage = () => {
-  const { token } = useContext(SessionContext);
   const { opportunityId } = useParams();
-  const [opportunity, setOpportunity] = useState(null);
-  const [coverLetter, setCoverLetter] = useState("");
-  const navigate = useNavigate();
+  const { token } = useContext(SessionContext);
+  const [applicationData, setApplicationData] = useState({
+    // Add other necessary fields
+    resume: "",
+    coverLetter: "",
+  });
 
-  const getOpportunityDetails = async () => {
+  const handleApply = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/opportunities/${opportunityId}`,
+      const response = await axios.post(
+        `http://localhost:5005/api/applications/${opportunityId}/apply`,
+        applicationData,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      if (response.status === 200) {
-        setOpportunity(response.data);
+      if (response.status === 201) {
+        console.log("Application successful");
       } else {
         console.log(response.data);
       }
@@ -30,56 +31,33 @@ const ApplyPage = () => {
     }
   };
 
-  useEffect(() => {
-    getOpportunityDetails();
-    // eslint-disable-next-line
-  }, []);
-
-  const handleApply = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await axios.post(
-        `${
-          import.meta.env.VITE_API_URL
-        }/api/opportunities/${opportunityId}/apply`,
-        { coverLetter },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        navigate(`/opportunities/${opportunityId}`);
-      } else {
-        console.log(response.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleChange = (e) => {
+    setApplicationData({ ...applicationData, [e.target.name]: e.target.value });
   };
 
   return (
     <div>
-      {opportunity && (
-        <>
-          <h1>Apply to {opportunity.title}</h1>
-          <form onSubmit={handleApply}>
-            <h2>Opportunity Details</h2>
-            <p>{opportunity.title}</p>
-            <label>
-              Cover Letter
-              <textarea
-                value={coverLetter}
-                onChange={(event) => setCoverLetter(event.target.value)}
-                required
-              />
-            </label>
-            <button type="submit">Submit Application</button>
-          </form>
-        </>
-      )}
+      <h1>Apply for Opportunity {opportunityId}</h1>
+      <form onSubmit={handleApply}>
+        <div>
+          <label>Resume</label>
+          <input
+            type="text"
+            name="resume"
+            value={applicationData.resume}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Cover Letter</label>
+          <textarea
+            name="coverLetter"
+            value={applicationData.coverLetter}
+            onChange={handleChange}
+          ></textarea>
+        </div>
+        <button type="submit">Apply</button>
+      </form>
     </div>
   );
 };
