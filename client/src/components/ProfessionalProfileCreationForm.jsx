@@ -1,20 +1,21 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { SessionContext } from "../contexts/SessionContext";
-import { useContext } from "react";
 import axios from "axios";
 
 const ProfessionalProfileCreationForm = () => {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [skills, setSkills] = useState([]);
+  const [name, setName] = useState("John Doe");
+  const [age, setAge] = useState(30);
+  const [skills, setSkills] = useState(["JavaScript", "React"]);
   const [newSkill, setNewSkill] = useState("");
-  const [experience, setExperience] = useState("");
-  const [location, setLocation] = useState("");
-  const [bio, setBio] = useState("");
-  const [phone, setPhone] = useState("");
-  const [linkedin, setLinkedin] = useState("");
-  const [website, setWebsite] = useState("");
+  const [experience, setExperience] = useState("5 years in web development");
+  const [location, setLocation] = useState("San Francisco");
+  const [bio, setBio] = useState(
+    "Passionate developer with a love for coding."
+  );
+  const [phone, setPhone] = useState("123-456-7890");
+  const [linkedin, setLinkedin] = useState("https://linkedin.com/in/johndoe");
+  const [website, setWebsite] = useState("https://johndoe.com");
   const navigate = useNavigate();
   const { token } = useContext(SessionContext);
   const API_URL = import.meta.env.VITE_API_URL;
@@ -62,7 +63,7 @@ const ProfessionalProfileCreationForm = () => {
         console.log(response.data);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.response ? error.response.data : error.message);
     }
   };
 
@@ -81,7 +82,7 @@ const ProfessionalProfileCreationForm = () => {
       <label className="form-label">
         Age:
         <input
-          type="text"
+          type="number"
           className="form-input"
           value={age}
           onChange={(event) => setAge(event.target.value)}
@@ -160,7 +161,7 @@ const ProfessionalProfileCreationForm = () => {
       <label className="form-label">
         LinkedIn:
         <input
-          type="text"
+          type="url"
           className="form-input"
           value={linkedin}
           onChange={(event) => setLinkedin(event.target.value)}
@@ -170,7 +171,7 @@ const ProfessionalProfileCreationForm = () => {
       <label className="form-label">
         Website:
         <input
-          type="text"
+          type="url"
           className="form-input"
           value={website}
           onChange={(event) => setWebsite(event.target.value)}

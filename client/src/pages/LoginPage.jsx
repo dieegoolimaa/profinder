@@ -1,70 +1,55 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { SessionContext } from "../contexts/SessionContext";
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setToken } = useContext(SessionContext);
+  const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
 
-  const handleSubmit = async (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    console.log(email, password);
-
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const response = await axios.post(`${API_URL}/api/auth/login`, {
+        email,
+        password,
       });
-
-      if (response.status === 200) {
-        const user = await response.json();
-        console.log("Response from server:", user);
-
-        if (user.authToken) {
-          setToken(user.authToken);
-          window.localStorage.setItem("authToken", user.authToken);
-          navigate("/professional-profile");
-        } else {
-          console.error("Token is missing in the response.");
-        }
+      if (response.data.authToken) {
+        setToken(response.data.authToken);
+        navigate("/dashboard");
       } else {
-        console.log("Failed to log in:", await response.json());
+        console.log("Token is missing in the response.");
       }
     } catch (error) {
-      console.log("Error during login:", error);
+      console.log(error.response ? error.response.data : error.message);
     }
   };
 
   return (
-    <>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">Login</button>
-      </form>
-    </>
+    <form onSubmit={handleLogin}>
+      <label>
+        Email:
+        <input
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+      </label>
+      <br />
+      <label>
+        Password:
+        <input
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+      </label>
+      <br />
+      <button type="submit">Login</button>
+    </form>
   );
 };
 
