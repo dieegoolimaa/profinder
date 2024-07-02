@@ -1,65 +1,76 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import { SessionContext } from "../contexts/SessionContext";
+import PropTypes from "prop-types";
 
-const ApplyPage = () => {
-  const { opportunityId } = useParams();
-  const { token } = useContext(SessionContext);
-  const [applicationData, setApplicationData] = useState({
-    // Add other necessary fields
-    resume: "",
-    coverLetter: "",
-  });
+const ApplePage = ({ opportunityId }) => {
+  const [pdfFile, setPdfFile] = useState(null);
+  const [desiredSalary, setDesiredSalary] = useState("");
+  const [availability, setAvailability] = useState("");
 
-  const handleApply = async () => {
+  const handleFileChange = (event) => {
+    setPdfFile(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("pdfFile", pdfFile);
+    formData.append("desiredSalary", desiredSalary);
+    formData.append("availability", availability);
+
     try {
       const response = await axios.post(
-        `http://localhost:5005/api/applications/${opportunityId}/apply`,
-        applicationData,
+        `/api/apply/${opportunityId}`,
+        formData,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
-      if (response.status === 201) {
-        console.log("Application successful");
-      } else {
-        console.log(response.data);
-      }
+      console.log("Application submitted successfully:", response.data);
     } catch (error) {
-      console.log(error);
+      console.error("Error submitting application:", error);
     }
   };
 
-  const handleChange = (e) => {
-    setApplicationData({ ...applicationData, [e.target.name]: e.target.value });
+  ApplePage.propTypes = {
+    opportunityId: PropTypes.string.isRequired,
   };
 
   return (
-    <div>
-      <h1>Apply for Opportunity {opportunityId}</h1>
-      <form onSubmit={handleApply}>
-        <div>
-          <label>Resume</label>
-          <input
-            type="text"
-            name="resume"
-            value={applicationData.resume}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Cover Letter</label>
-          <textarea
-            name="coverLetter"
-            value={applicationData.coverLetter}
-            onChange={handleChange}
-          ></textarea>
-        </div>
-        <button type="submit">Apply</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="pdfFile">Attach Resume (PDF only):</label>
+        <input
+          type="file"
+          id="pdfFile"
+          accept="application/pdf"
+          onChange={handleFileChange}
+        />
+      </div>
+      <div>
+        <label htmlFor="desiredSalary">Desired Salary:</label>
+        <input
+          type="text"
+          id="desiredSalary"
+          value={desiredSalary}
+          onChange={(e) => setDesiredSalary(e.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="availability">Availability:</label>
+        <input
+          type="text"
+          id="availability"
+          value={availability}
+          onChange={(e) => setAvailability(e.target.value)}
+        />
+      </div>
+      <button type="submit">Submit Application</button>
+    </form>
   );
 };
 
-export default ApplyPage;
+export default ApplePage;

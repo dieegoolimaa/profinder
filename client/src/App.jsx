@@ -3,8 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import OpportunitiesListPage from "./components/OpportunitiesListPage.jsx";
-import ProfessionalProfileCreationForm from "./components/ProfessionalProfileCreationForm.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
+import SignupAndProfilePage from "./pages/SignupAndProfilePage.jsx";
 import CreateOpportunityPage from "./pages/CreateOpportunityPage.jsx";
 import Navbar from "./components/Navbar.jsx";
 import ProfileView from "./components/ProfileView.jsx";
@@ -25,12 +24,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/opportunities" element={<OpportunitiesListPage />} />
-        <Route
-          path="/professional-profile"
-          element={<ProfessionalProfileCreationForm />}
-        />
         <Route path="/profile" element={<ProfileView />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/signup" element={<SignupAndProfilePage />} />
         <Route path="/create-opportunity" element={<CreateOpportunityPage />} />
         <Route
           path="/opportunities/:opportunityId"

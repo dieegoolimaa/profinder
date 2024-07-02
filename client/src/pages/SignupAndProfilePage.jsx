@@ -1,9 +1,15 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { SessionContext } from "../contexts/SessionContext";
 import axios from "axios";
+import { SessionContext } from "../contexts/SessionContext";
+import "../styles/SignupPage.css";
 
-const ProfessionalProfileCreationForm = () => {
+const SignupAndProfilePage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState(null);
+
   const [name, setName] = useState("John Doe");
   const [age, setAge] = useState(30);
   const [skills, setSkills] = useState(["JavaScript", "React"]);
@@ -16,8 +22,9 @@ const ProfessionalProfileCreationForm = () => {
   const [phone, setPhone] = useState("123-456-7890");
   const [linkedin, setLinkedin] = useState("https://linkedin.com/in/johndoe");
   const [website, setWebsite] = useState("https://johndoe.com");
+
+  const { setToken } = useContext(SessionContext);
   const navigate = useNavigate();
-  const { token } = useContext(SessionContext);
   const API_URL = import.meta.env.VITE_API_URL;
 
   const handleSkillAdd = () => {
@@ -33,42 +40,110 @@ const ProfessionalProfileCreationForm = () => {
     setSkills(updatedSkills);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSignupAndProfileCreation = async (event) => {
     event.preventDefault();
-    try {
-      const response = await axios.post(
-        `${API_URL}/api/professional-profile`,
-        {
-          name,
-          age,
-          skills,
-          experience,
-          location,
-          bio,
-          phone,
-          linkedin,
-          website,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    setError(null); // Reset error
 
-      if (response.status === 200) {
-        navigate("/profile");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const signupResponse = await axios.post(`${API_URL}/api/auth/signup`, {
+        email,
+        password,
+      });
+
+      if (signupResponse.data.authToken) {
+        setToken(signupResponse.data.authToken);
+
+        try {
+          const profileResponse = await axios.post(
+            `${API_URL}/api/professional-profile`,
+            {
+              name,
+              age,
+              skills,
+              experience,
+              location,
+              bio,
+              phone,
+              linkedin,
+              website,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${signupResponse.data.authToken}`,
+              },
+            }
+          );
+
+          if (profileResponse.status === 200) {
+            navigate("/profile");
+          } else {
+            setError("Error creating profile.");
+          }
+        } catch (profileError) {
+          setError(
+            profileError.response
+              ? profileError.response.data.message
+              : profileError.message
+          );
+        }
       } else {
-        console.log(response.data);
+        setError("Token is missing in the response.");
       }
-    } catch (error) {
-      console.log(error.response ? error.response.data : error.message);
+    } catch (signupError) {
+      setError(
+        signupError.response
+          ? signupError.response.data.message
+          : signupError.message
+      );
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSignupAndProfileCreation}
+      className="signup-and-profile-form"
+    >
+      {error && <div className="error-notification">{error}</div>}
+
+      <h2>Sign Up</h2>
+      <label>
+        Email:
+        <input
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
+      </label>
+      <br />
+      <label>
+        Password:
+        <input
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          required
+        />
+      </label>
+      <br />
+      <label>
+        Confirm Password:
+        <input
+          type="password"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          required
+        />
+      </label>
+      <br />
+
+      <h2>Create Professional Profile</h2>
       <label className="form-label">
         Name:
         <input
@@ -179,10 +254,10 @@ const ProfessionalProfileCreationForm = () => {
       </label>
       <br />
       <button type="submit" className="btn btn-primary">
-        Submit
+        Sign Up and Create Profile
       </button>
     </form>
   );
 };
 
-export default ProfessionalProfileCreationForm;
+export default SignupAndProfilePage;

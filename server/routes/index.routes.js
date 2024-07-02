@@ -7,9 +7,6 @@ router.get("/", (req, res) => {
 const authRoutes = require("./auth.routes");
 router.use("/auth", authRoutes);
 
-const professionalProfileRoutes = require("./professional-profile.routes");
-router.use("/professional-profile", professionalProfileRoutes);
-
 const opportunityRoutes = require("./opportunity.routes");
 router.use("/opportunities", opportunityRoutes);
 

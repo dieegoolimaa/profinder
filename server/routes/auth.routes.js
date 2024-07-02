@@ -6,7 +6,19 @@ const router = require("express").Router();
 
 // Sign up route
 router.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
+  const {
+    email,
+    password,
+    name,
+    age,
+    skills,
+    experience,
+    location,
+    bio,
+    phone,
+    linkedin,
+    website,
+  } = req.body;
 
   // Password validation
   if (
@@ -30,11 +42,34 @@ router.post("/signup", async (req, res) => {
 
   // Create user
   try {
-    const newUser = await User.create({ email, password: hashedPassword });
+    const newUser = await User.create({
+      email,
+      password: hashedPassword,
+      name,
+      age,
+      profile: {
+        skills,
+        experience,
+        location,
+        bio,
+      },
+      contact: {
+        phone,
+        linkedin,
+        website,
+      },
+    });
+
+    // Generate JWT
+    const authToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+      algorithm: "HS256",
+      expiresIn: "6h",
+    });
+
     res.status(201).json({
       success: true,
       message: "User created successfully",
-      user: newUser,
+      authToken,
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -47,7 +82,6 @@ router.post("/signup", async (req, res) => {
     }
   }
 });
-
 // Login route
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;

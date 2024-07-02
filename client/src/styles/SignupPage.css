@@ -1,0 +1,23 @@
+/* SignupPage.css e LoginPage.css */
+.error-notification {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.signup-form,
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.signup-form label,
+.login-form label {
+  margin-bottom: 10px;
+}
+
+.signup-form button,
+.login-form button {
+  margin-top: 10px;
+}

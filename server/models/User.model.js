@@ -12,6 +12,25 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    name: {
+      type: String,
+      required: true,
+    },
+    age: {
+      type: Number,
+      required: true,
+    },
+    profile: {
+      skills: [String],
+      experience: String,
+      location: String,
+      bio: String,
+    },
+    contact: {
+      phone: String,
+      linkedin: String,
+      website: String,
+    },
   },
   {
     timestamps: true,
