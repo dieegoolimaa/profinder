@@ -5,10 +5,15 @@ import PropTypes from "prop-types";
 const ApplePage = ({ opportunityId }) => {
   const [pdfFile, setPdfFile] = useState(null);
   const [desiredSalary, setDesiredSalary] = useState("");
-  const [availability, setAvailability] = useState("");
+  const [availability, setAvailability] = useState("15 days"); // Default availability
 
   const handleFileChange = (event) => {
     setPdfFile(event.target.files[0]);
+  };
+
+  const handleSalaryChange = (event) => {
+    const value = event.target.value.replace(/\D/g, ""); // Allow only digits
+    setDesiredSalary(value);
   };
 
   const handleSubmit = async (event) => {
@@ -35,10 +40,6 @@ const ApplePage = ({ opportunityId }) => {
     }
   };
 
-  ApplePage.propTypes = {
-    opportunityId: PropTypes.string.isRequired,
-  };
-
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -51,26 +52,35 @@ const ApplePage = ({ opportunityId }) => {
         />
       </div>
       <div>
-        <label htmlFor="desiredSalary">Desired Salary:</label>
+        <label htmlFor="desiredSalary">Desired Salary (USD):</label>
         <input
           type="text"
           id="desiredSalary"
           value={desiredSalary}
-          onChange={(e) => setDesiredSalary(e.target.value)}
+          onChange={handleSalaryChange}
+          placeholder="Enter desired salary"
         />
       </div>
       <div>
         <label htmlFor="availability">Availability:</label>
-        <input
-          type="text"
+        <select
           id="availability"
           value={availability}
           onChange={(e) => setAvailability(e.target.value)}
-        />
+        >
+          <option value="15 days">15 days</option>
+          <option value="30 days">30 days</option>
+          <option value="60 days">60 days</option>
+          <option value="Immediately">Immediately</option>
+        </select>
       </div>
       <button type="submit">Submit Application</button>
     </form>
   );
+};
+
+ApplePage.propTypes = {
+  opportunityId: PropTypes.string.isRequired,
 };
 
 export default ApplePage;
