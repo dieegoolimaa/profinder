@@ -38,6 +38,11 @@ const OpportunitiesListPage = () => {
     setSearch(event.target.value);
   };
 
+  // Filter opportunities based on the search input
+  const filteredOpportunities = opportunities.filter((opportunity) =>
+    opportunity.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <>
       <h1>Opportunities</h1>
@@ -48,8 +53,8 @@ const OpportunitiesListPage = () => {
         placeholder="Search by title"
       />
       <ul>
-        {opportunities.length > 0 ? (
-          opportunities.map((currentOpportunity) => (
+        {filteredOpportunities.length > 0 ? (
+          filteredOpportunities.map((currentOpportunity) => (
             <div key={currentOpportunity._id}>
               <Link to={`/opportunities/${currentOpportunity._id}`}>
                 <li>{currentOpportunity.title}</li>

@@ -22,17 +22,11 @@ router.post(
   upload.single("pdfFile"),
   async (req, res) => {
     try {
-      const { desiredSalary, availability } = req.body;
-      const pdfFilePath = req.file.path;
-
       const newApplication = await Application.create({
         userId: req.tokenPayload.id,
         opportunityId: req.params.opportunityId,
-        desiredSalary,
-        availability,
-        pdfFilePath, // Save the file path in the database
+        ...req.body,
       });
-
       res.status(201).json(newApplication);
     } catch (error) {
       console.error("Error applying to opportunity:", error);

@@ -11,9 +11,10 @@ import OpportunityDetailsPage from "./pages/OpportunityDetailsPage.jsx";
 import ApplyPage from "./pages/ApplyPage.jsx";
 import OpportunityApplicationsPage from "./components/OpportunityApplicationsPage.jsx";
 
+const hideNavbarRoutes = ["/", "/login", "/signup", "/profile-creation"];
+
 function App() {
   const location = useLocation();
-  const hideNavbarRoutes = ["/", "/login", "/signup", "/profile-creation"];
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
 
   return (

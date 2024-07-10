@@ -4,6 +4,20 @@ const { isAuthenticated } = require("../middlewares/route-guard.middleware");
 const Opportunity = require("../models/Opportunity.model");
 const Application = require("../models/Application.model");
 
+// Create a new opportunity
+router.post("/", isAuthenticated, async (req, res) => {
+  try {
+    const newOpportunity = await Opportunity.create({
+      ...req.body,
+      userId: req.tokenPayload.id,
+    });
+    res.status(201).json(newOpportunity);
+  } catch (error) {
+    console.error("Error creating opportunity:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // Get all opportunities
 router.get("/", async (req, res) => {
   try {

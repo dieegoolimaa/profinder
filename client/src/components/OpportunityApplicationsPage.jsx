@@ -1,57 +1,44 @@
-import { useState, useEffect, useContext } from "react";
-import { SessionContext } from "../contexts/SessionContext";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 
 const OpportunityApplicationsPage = ({ opportunityId }) => {
-  const { token } = useContext(SessionContext);
   const [applications, setApplications] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    if (!opportunityId) {
-      console.error("Opportunity ID is missing");
-      return;
-    }
-
     const getApplications = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Assuming token is stored in localStorage
+        },
+      };
+
       try {
         const response = await axios.get(
           `${API_URL}/api/opportunities/${opportunityId}/applications`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          config
         );
-        if (response.status === 200) {
-          console.log(response.data);
-          setApplications(response.data);
-        } else {
-          console.log(response.data);
-        }
+        setApplications(response.data);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching applications:", error);
       }
     };
 
     getApplications();
-  }, [API_URL, opportunityId, token]);
+  }, [opportunityId]);
 
   OpportunityApplicationsPage.propTypes = {
-    opportunityId: PropTypes.string,
+    opportunityId: PropTypes.string.isRequired,
   };
 
   return (
     <div>
-      <h1>Applications</h1>
-      {applications.length > 0 ? (
-        <ul>
-          {applications.map((application) => (
-            <li key={application._id}>{application.coverLetter}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No applications found</p>
-      )}
+      <ul>
+        {applications.map((application) => (
+          <li key={application.id}>{application.name}</li>
+        ))}
+      </ul>
     </div>
   );
 };
