@@ -4,7 +4,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import OpportunitiesListPage from "./components/OpportunitiesListPage.jsx";
 import SignupAndProfilePage from "./pages/SignupAndProfilePage.jsx";
-import CreateOpportunityPage from "./pages/CreateOpportunityPage.jsx";
+// import CreateOpportunityPage from "./pages/CreateOpportunityPage.jsx";
 import Navbar from "./components/Navbar.jsx";
 import ProfileView from "./components/ProfileView.jsx";
 import OpportunityDetailsPage from "./pages/OpportunityDetailsPage.jsx";
@@ -27,7 +27,7 @@ function App() {
         <Route path="/opportunities" element={<OpportunitiesListPage />} />
         <Route path="/profile" element={<ProfileView />} />
         <Route path="/signup" element={<SignupAndProfilePage />} />
-        <Route path="/create-opportunity" element={<CreateOpportunityPage />} />
+        {/* <Route path="/create-opportunity" element={<CreateOpportunityPage />} /> */}
         <Route
           path="/opportunities/:opportunityId"
           element={<OpportunityDetailsPage />}

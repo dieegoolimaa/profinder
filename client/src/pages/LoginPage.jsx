@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SessionContext } from "../contexts/SessionContext";
 import "../styles/SignupPage.css";
@@ -34,31 +34,34 @@ const LoginPage = () => {
   };
 
   return (
-    <form onSubmit={handleLogin} className="login-form">
-      {error && <div className="error-notification">{error}</div>}
-      <label>
-        Email:
-        <input
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
-      </label>
-      <br />
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
-      </label>
-      <br />
-      <button type="submit">Login</button>
-    </form>
-  );
+      <>
+        <form onSubmit={handleLogin} className="login-form">
+          {error && <div className="error-notification">{error}</div>}
+          <label>
+            Email:
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+          </label>
+          <br />
+          <label>
+            Password:
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </label>
+          <br />
+          <button type="submit">Login</button>
+        </form>
+        <Link to="/signup">Don't have an account? Sign up here.</Link>
+      </>
+    );
 };
 
 export default LoginPage;
