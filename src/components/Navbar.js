@@ -18,9 +18,10 @@ const NavBar = () => {
             <div className="links">
                 <a href="/">Home</a>
                 <a href="/board">Board</a>
-                <a href="/register">Register</a>
                 <a href="/login">Login</a>
                 { token && <a href="/" onClick={handleLogout}>Logout</a> }
+                { !token && <a href="/login">Login</a> }
+                { !token && <a href="/register">Register</a> }
             </div>
         </nav>
     );
