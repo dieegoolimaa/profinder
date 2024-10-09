@@ -26,7 +26,7 @@ const RegisterPage = () => {
             });
     
             if (response.status === 200) {
-                navigate('/login');
+                navigate('/profile-creation');
             } else {
                 setError('Something went wrong. Please try again.');
             }
